@@ -16,7 +16,7 @@ class PrototypesController < ApplicationController
   def create
     @prototype = Prototype.new(prototype_params)
     if @prototype.save
-      redirect_to prototype_path(@prototype)
+      redirect_to root_path(@prototype)
     else
       render :new, status: :unprocessable_entity
     end
@@ -35,7 +35,7 @@ class PrototypesController < ApplicationController
   def update
     @prototype = Prototype.find(params[:id])
     if @prototype.update(prototype_params)
-      redirect_to prototype_path(@prototype)
+      redirect_to root_path(@prototype)
     else
       render :edit, status: :unprocessable_entity
     end
@@ -44,9 +44,9 @@ class PrototypesController < ApplicationController
   def destroy
     @prototype = Prototype.find(params[:id])
     if @prototype.destroy
-      redirect_to prototype_path(@prototype)
+      redirect_to root_path(@prototype)
     else
-      redirect_to prototype_path(@prototype)
+      redirect_to root_path(@prototype)
     end
   end
 
@@ -59,12 +59,12 @@ class PrototypesController < ApplicationController
   def set_prototype
   @prototype = Prototype.find_by(id: params[:id])
   if @prototype.nil?
-    redirect_to root_path, notice: "Prototype not found."
+    redirect_to root_path(@prototype), notice: "Prototype not found."
   end
 end
 
   def contributor_confirmation
-      redirect_to prototype_path(@prototype) unless current_user == @prototype.user
+      redirect_to root_path(@prototype) unless current_user == @prototype.user
     end
   end
 
