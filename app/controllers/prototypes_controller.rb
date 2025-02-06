@@ -1,5 +1,7 @@
 class PrototypesController < ApplicationController
+  before_action :set_prototype, except: [:index, :new, :create]
   before_action :authenticate_user!, except: [:index, :show]
+  before_action :contributor_confirmation, only: [:edit, :update, :destroy]
 
 
 
@@ -14,7 +16,7 @@ class PrototypesController < ApplicationController
   def create
     @prototype = Prototype.new(prototype_params)
     if @prototype.save
-      redirect_to root_path
+      redirect_to prototype_path(@prototype)
     else
       render :new, status: :unprocessable_entity
     end
@@ -42,9 +44,9 @@ class PrototypesController < ApplicationController
   def destroy
     @prototype = Prototype.find(params[:id])
     if @prototype.destroy
-      redirect_to root_path
+      redirect_to prototype_path(@prototype)
     else
-      redirect_to root_path
+      redirect_to prototype_path(@prototype)
     end
   end
 
@@ -55,13 +57,14 @@ class PrototypesController < ApplicationController
   end
 
   def set_prototype
-    @prototype = Prototype.find(params[:id])
+  @prototype = Prototype.find_by(id: params[:id])
+  if @prototype.nil?
+    redirect_to root_path, notice: "Prototype not found."
   end
+end
 
-  def move_to_index
-    unless user_signed_in?
-      redirect_to action: :index
+  def contributor_confirmation
+      redirect_to prototype_path(@prototype) unless current_user == @prototype.user
     end
   end
 
-end
